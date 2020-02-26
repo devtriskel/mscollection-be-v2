@@ -7,7 +7,8 @@
  */
 package com.mg.mscollection.entity;
 
-import java.util.List;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,7 +43,7 @@ public class Style {
       joinColumns = @JoinColumn(name = "style_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"))
   @JsonBackReference
-  private List<Artist> artists;
+  private Set<Artist> artists;
   
   // Public constructors
   public Style() {
@@ -70,11 +71,11 @@ public class Style {
     this.name = name;
   }
 
-  public List<Artist> getArtists() {
+  public Set<Artist> getArtists() {
     return artists;
   }
 
-  public void setArtists(List<Artist> artists) {
+  public void setArtists(Set<Artist> artists) {
     this.artists = artists;
   }
 

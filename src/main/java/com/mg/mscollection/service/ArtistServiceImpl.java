@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mg.mscollection.dao.ArtistRepository;
+import com.mg.mscollection.dto.mapper.ArtistMapper;
+import com.mg.mscollection.dto.model.ArtistDTO;
 import com.mg.mscollection.entity.Artist;
+import com.mg.mscollection.entity.Member;
 
 @Service
 public class ArtistServiceImpl implements ArtistService {
@@ -26,33 +29,60 @@ public class ArtistServiceImpl implements ArtistService {
     this.artistRepository = artistRepository;
   }
 
+  /**
+   * 
+   */
   @Override
-  public List<Artist> getAll() {
-    return artistRepository.findAll();
+  public List<ArtistDTO> getAll() {
+    return ArtistMapper.toArtistDTO(
+        artistRepository.findAll());
   }
 
+  /**
+   * 
+   */
   @Override
-  public Artist getById(int id) {
+  public ArtistDTO getById(int id) {
     Optional<Artist> result = artistRepository.findById(id);
 
-    Artist artist = null;
+    ArtistDTO artistDto = null;
 
     if (result.isPresent()) {
-      artist = result.get();
-    } else {
-      throw new RuntimeException("No Artist found with ID: " + id);
+      artistDto = ArtistMapper.toArtistDTO(result.get());
     }
 
-    return artist;
+    return artistDto;
   }
 
+  /**
+   * 
+   */
   @Override
-  public void save(Artist artist) {
-    artistRepository.save(artist);
+  public ArtistDTO save(ArtistDTO artistDto) {
+    return ArtistMapper.toArtistDTO(
+        artistRepository.save(
+            ArtistMapper.toArtist(artistDto)));
   }
 
+  /**
+   * 
+   */
   @Override
   public void deleteById(int id) {
+    /*
+    Optional<Artist> result = artistRepository.findById(id);
+
+    if (result.isPresent()) {
+      Artist artist = result.get();
+      
+      for (Member member : artist.getMembers()) {
+        artist.removeMember(member);
+        System.out.println("Hola");
+      }
+
+      //artistRepository.save(artist);
+    }*/
+
     artistRepository.deleteById(id);
   }
 

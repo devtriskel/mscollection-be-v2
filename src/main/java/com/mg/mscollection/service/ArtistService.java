@@ -9,15 +9,15 @@ package com.mg.mscollection.service;
 
 import java.util.List;
 
-import com.mg.mscollection.entity.Artist;
+import com.mg.mscollection.dto.model.ArtistDTO;
 
 public interface ArtistService {
 
-  List<Artist> getAll();
+  List<ArtistDTO> getAll();
 
-  Artist getById(int id);
+  ArtistDTO getById(int id);
 
-  void save(Artist artist);
+  ArtistDTO save(ArtistDTO artist);
 
   void deleteById(int id);
 

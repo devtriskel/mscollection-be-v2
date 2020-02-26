@@ -7,8 +7,6 @@
  */
 package com.mg.mscollection.rest;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mg.mscollection.entity.Artist;
+import com.mg.mscollection.dto.model.ArtistDTO;
+import com.mg.mscollection.dto.model.Response;
 import com.mg.mscollection.service.ArtistService;
 
 @RestController
@@ -33,49 +32,69 @@ public class ArtistRestController {
     this.artistService = artistService;
   }
 
+  /**
+   * 
+   * @return
+   */
   @GetMapping("/artists")
-  public List<Artist> getAll() {
-    return artistService.getAll();
+  public Response<Object> getAll() {
+    return Response.ok().setPayload(artistService.getAll());
   }
 
+  /**
+   * 
+   * @param artistId
+   * @return
+   */
   @GetMapping("/artists/{artistId}")
-  public Artist getArtistById(@PathVariable int artistId) {
-    Artist artist = artistService.getById(artistId);
+  public Response<Object> getArtistById(@PathVariable int artistId) {
+    ArtistDTO artistDto = artistService.getById(artistId);
 
-    if (artist == null) {
-      throw new RuntimeException("No Artist found with ID: " + artistId);
+    if (artistDto == null) {
+      return Response.notFound().setErrors("No Artist found with ID: " + artistId);
     }
 
-    return artist;
+    return Response.ok().setPayload(artistDto);
   }
 
+  /**
+   * 
+   * @param artistDto
+   * @return
+   */
   @PostMapping("/artists")
-  public Artist addArtist(@RequestBody Artist artist) {
-    artist.setId(0);
+  public Response<Object> addArtist(@RequestBody ArtistDTO artistDto) {
+    artistDto.setId(0);
 
-    artistService.save(artist);
-
-    return artist;
+    return Response.ok().setPayload(artistService.save(artistDto));
   }
 
-  @PutMapping("/artists/{artistId}")
-  public Artist updateArtist(@RequestBody Artist artist) {
-    artistService.save(artist);
-
-    return artist;
+  /**
+   * 
+   * @param artistDto
+   * @return
+   */
+  @PutMapping("/artists")
+  public Response<Object> updateArtist(@RequestBody ArtistDTO artistDto) {
+    return Response.ok().setPayload(artistService.save(artistDto));
   }
 
+  /**
+   * 
+   * @param artistId
+   * @return
+   */
   @DeleteMapping("/artists/{artistId}")
-  public String deleteArtistById(@PathVariable int artistId) {
-    Artist artist = artistService.getById(artistId);
+  public Response<Object> deleteArtistById(@PathVariable int artistId) {
+    ArtistDTO artistDto = artistService.getById(artistId);
 
-    if (artist == null) {
-      throw new RuntimeException("No Artist found with ID: " + artistId);
+    if (artistDto == null) {
+      return Response.notFound().setErrors("No Artist found with ID: " + artistId);
     }
 
     artistService.deleteById(artistId);
 
-    return "Deleted Artist with ID: " + artistId;
+    return Response.ok().setPayload("Deleted Artist with ID: " + artistId);
   }
 
 }

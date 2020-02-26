@@ -7,7 +7,9 @@
  */
 package com.mg.mscollection.entity;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,7 +46,7 @@ public class Artist {
       fetch = FetchType.LAZY,
       mappedBy = "artist")
   @JsonBackReference
-  private List<Member> members;
+  private Set<Member> members = new HashSet<>();
   
   @ManyToMany(
       cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
@@ -54,7 +56,7 @@ public class Artist {
       joinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "style_id", referencedColumnName = "id"))
   @JsonManagedReference
-  private List<Style> styles;  
+  private Set<Style> styles = new HashSet<>();
   
   @ManyToMany(
       cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
@@ -63,7 +65,7 @@ public class Artist {
       name = "related_artists", 
       joinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"), 
       inverseJoinColumns = @JoinColumn(name = "related_artist_id", referencedColumnName = "id"))
-  private List<Artist> relatedToArtists;
+  private Set<Artist> relatedToArtists = new HashSet<>();
   
   @ManyToMany(
       cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
@@ -73,7 +75,7 @@ public class Artist {
       joinColumns = @JoinColumn(name = "related_artist_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"))
   @JsonBackReference
-  private List<Artist> relatedFromArtists;
+  private Set<Artist> relatedFromArtists = new HashSet<>();
   
   // Public constructors
   public Artist() {
@@ -110,36 +112,46 @@ public class Artist {
     this.year = year;
   }
 
-  public List<Member> getMembers() {
+  public Set<Member> getMembers() {
     return members;
   }
 
-  public void setMembers(List<Member> members) {
+  public void setMembers(Set<Member> members) {
     this.members = members;
   }
 
-  public List<Style> getStyles() {
+  public Set<Style> getStyles() {
     return styles;
   }
 
-  public void setStyles(List<Style> styles) {
+  public void setStyles(Set<Style> styles) {
     this.styles = styles;
   }
 
-  public List<Artist> getRelatedToArtists() {
+  public Set<Artist> getRelatedToArtists() {
     return relatedToArtists;
   }
 
-  public void setRelatedToArtists(List<Artist> relatedToArtists) {
+  public void setRelatedToArtists(Set<Artist> relatedToArtists) {
     this.relatedToArtists = relatedToArtists;
   }
 
-  public List<Artist> getRelatedFromArtists() {
+  public Set<Artist> getRelatedFromArtists() {
     return relatedFromArtists;
   }
 
-  public void setRelatedFromArtists(List<Artist> relatedFromArtists) {
+  public void setRelatedFromArtists(Set<Artist> relatedFromArtists) {
     this.relatedFromArtists = relatedFromArtists;
+  }
+
+  public void addMember(Member member) {
+    this.members.add(member);
+    //member.setArtist(this);
+  }
+
+  public void removeMember(Member member) {
+    this.members.remove(member);
+    //member.setArtist(null);
   }
 
   @Override
